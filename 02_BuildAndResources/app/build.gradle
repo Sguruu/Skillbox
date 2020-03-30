@@ -4,6 +4,9 @@ apply plugin: 'kotlin-android'
 
 apply plugin: 'kotlin-android-extensions'
 
+//добавление библиотеки gradle-task-tree
+apply plugin: "com.dorongold.task-tree"
+
 android {
     compileSdkVersion 29
     buildToolsVersion "29.0.0"
@@ -16,11 +19,46 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
+        debug {
+            //для возможности запуска все вариантов параллельно
+            //нужон ищменить applicationID
+            applicationIdSuffix ".debug"
+            //замена названия приложения
+            manifestPlaceholders = [app_name: "DebugSkillbox"]
+        }
+
+        qa {
+            //настройки наследуются от конфигурации дебаг
+            initWith debug
+            applicationIdSuffix ".test"
+            manifestPlaceholders = [app_name: "QaSkillbox"]
+
+        }
+
         release {
+            //подписывается так же как и дебажная сборка
+            signingConfig signingConfigs.debug
+            manifestPlaceholders = [app_name: "QReleasSkillbox"]
+
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
+    flavorDimensions "group1"
+
+    productFlavors {
+        freeVersion {
+            dimension "group1"
+            applicationIdSuffix ".free"
+            minSdkVersion 28
+        }
+        paidVersion {
+            dimension "group1"
+            applicationIdSuffix ".paid"
+        }
+    }
+
 }
 
 dependencies {
