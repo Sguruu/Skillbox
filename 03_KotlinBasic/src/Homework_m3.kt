@@ -1,8 +1,8 @@
 //val list = mutableListOf<Int>()
     //val map = mutableMapOf<Int, Int>()
 fun main() {
-    val list = mutableListOf<Int>()
-    val map = mutableMapOf<Int, Int>()
+    var list: MutableList<Int>
+    var map: MutableMap<Int, Int>
 
     //1. Ввести число N с клавиатуры.
     messegeTask("Ввести число N с клавиатуры.")
@@ -14,7 +14,7 @@ fun main() {
     //
     //3. Сохранить числа в список.
     //4. Шаги 2–3 вынести в функцию, которая принимает число N и возвращает список из N чисел, введённых с клавиатуры.
-    listNumber(number,list)
+   list = listNumber(number)
 
     //5. Вывести в консоль количество введенных положительных чисел. (Использовать if).
     positiveNumbers(list)
@@ -35,7 +35,7 @@ fun main() {
     //(Создать функцию для вычисления НОД, которая использует рекурсию с модификатором tailrec.)
     //
     //10. Создать Map, где ключ — число, а значение — НОД из пункта 9.
-    nODinList(list,map)
+    map = nODinList(list)
 
     //11. Вывести все числа с НОД в формате: Число <>, сумма <>, НОД <>. Использовать итерацию
     // по Map из пункта 10. Для каждого из чисел использовать новую строку.
@@ -50,23 +50,26 @@ fun messegeTask(messege: String) {
 
 }
 
-fun listNumber(y: Int = 3, list: MutableList<Int> ) {
+fun listNumber(y: Int = 3): MutableList<Int> {
+    val list = mutableListOf<Int>()
+    var numberNoNull = 0
 
     for (i in 0 until y) {
         print("Введите число: ")
-        val numberTwo: Int? = readLine()?.toInt()
+        val numberTwo: Int? = readLine()?.toIntOrNull()
         if (numberTwo == null) {
         } else {
             println("Вы ввели число: $numberTwo")
             list.add(numberTwo)
+            numberNoNull++
         }
 
     }
     messegeTask("Вывод массива ")
-    for (i in 0 until y) {
+    for (i in 0 until numberNoNull) {
         println(list[i])
     }
-
+return list
 }
 
 fun positiveNumbers(list: MutableList<Int>) {
@@ -85,13 +88,15 @@ fun inicalSet(list: MutableList<Int>) {
     println(set)
 }
 
-fun nODinList(list: MutableList<Int>,map:MutableMap<Int,Int>) {
+fun nODinList(list: MutableList<Int>): MutableMap<Int, Int> {
     val listSum = list.sum()
+    val map = mutableMapOf<Int, Int>()
     messegeTask("Функция вычисления НОД запущена")
     (0 until list.size).forEach { i ->
-        map.put(list[i], nOD(list[i], listSum))
-        println("Нод для числа ${list[i]} составляет: ${nOD(list[i], listSum)}")
+        map.put(list[i], nODREC(list[i], listSum))
+        println("Нод для числа ${list[i]} составляет: ${nODREC(list[i], listSum)}")
     }
+    return map
 }
 
 //Вычисление НОД
@@ -116,6 +121,13 @@ fun nOD(i: Int, y: Int): Int {
         minNumber = delen
     }
     return Math.abs(minNumber)
+}
+
+//Вычисление НОД Рекурсией (с модификатором tailrec)
+tailrec fun nODREC (i: Int, y: Int):Int{
+    if (y==0)
+        return Math.abs(i)
+    return nODREC(y,i % y)
 }
 
 fun outputAllNumbers(list: MutableList<Int>,map:MutableMap<Int,Int>) {
